@@ -50,7 +50,6 @@ class ChangepointHelper
 	end
 
 	def run_program
-
 		puts "What do you want to calculate?"
 		puts " "
 		puts "1. Percentages"
@@ -73,4 +72,5 @@ class ChangepointHelper
 end
 
 cp = ChangepointHelper.new
+cp.start_program
 cp.run_program
