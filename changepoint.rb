@@ -59,9 +59,9 @@ class ChangepointHelper
 		choice = $stdin.gets.chomp
 
 		if choice == "1"
-			calc_percentage (hours)
+			calc_percentage (@hours)
 		elsif choice == "2"
-			calc_project_hours (hours)
+			calc_project_hours (@hours)
 		else
 			puts "You didn't enter a valid selection."
 		end
