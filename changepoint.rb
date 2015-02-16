@@ -9,6 +9,15 @@ class ChangepointHelper
     puts "Changepoint sucks, but this program will help it suck a little less :-D"
     puts "_____________________________________________________________________"
     @hours = get_hours
+
+    puts "What do you want to calculate?"
+    puts " "
+    puts "1. Percentages"
+    puts "2. Project Hours"
+    print "> "
+
+    @choice = $stdin.gets.chomp
+
   end
 
 	def get_hours
@@ -41,7 +50,7 @@ class ChangepointHelper
 		do_another = $stdin.gets.chomp.downcase
 		if do_another == "y"
 			run_program
-		elsif do_another = "n"
+		elsif do_another == "n"
 			exit(0)
 		else
 			"You didn't enter a valid selection."
@@ -50,17 +59,10 @@ class ChangepointHelper
 	end
 
 	def run_program
-		puts "What do you want to calculate?"
-		puts " "
-		puts "1. Percentages"
-		puts "2. Project Hours"
-		print "> "
 
-		choice = $stdin.gets.chomp
-
-		if choice == "1"
+		if @choice == "1"
 			calc_percentage (@hours)
-		elsif choice == "2"
+		elsif @choice == "2"
 			calc_project_hours (@hours)
 		else
 			puts "You didn't enter a valid selection."
