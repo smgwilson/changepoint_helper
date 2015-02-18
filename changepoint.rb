@@ -11,7 +11,7 @@ class ChangepointHelper
       when "start"
         start_program
       when "continue"
-        keep_going
+        calculation_loop
       when "end"
         end_program
     end
@@ -31,11 +31,11 @@ class ChangepointHelper
     print "> "
 
     @choice = $stdin.gets.chomp
-    select_calculation(@choice)
+    select_calculation_type (@choice)
 
   end
 
-  def select_calculation(option)
+  def select_calculation_type (option)
     if option == "1"
       calc_percentage (@hours)
     elsif option == "2"
@@ -44,7 +44,7 @@ class ChangepointHelper
       puts "You didn't enter a valid selection."
     end
 
-    keep_going
+    calculation_loop
 
   end
 
@@ -86,21 +86,21 @@ class ChangepointHelper
     elsif sum > @hours
       puts "You've exceeded your reported hours."
     else
-      puts "You're up to #{sum}%"
+      puts "You're up to #{sum} hours."
     end
 	end
 
-	def keep_going
+	def calculation_loop
 		puts "Do another calculation? (y/n)"
 		print "> "
 		do_another = $stdin.gets.chomp.downcase
 		if do_another == "y"
-			select_calculation(@choice)
+			select_calculation_type (@choice)
 		elsif do_another == "n"
 			exit(0)
 		else
 			"You didn't enter a valid selection."
-			keep_going
+			calculation_loop
 		end
   end
 
