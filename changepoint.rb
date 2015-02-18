@@ -6,6 +6,7 @@ class ChangepointHelper
     @all_hours = Array.new
   end
 
+  # manage program flow
   def run_program(do_next)
     case do_next
       when "start"
@@ -17,7 +18,7 @@ class ChangepointHelper
     end
   end
 
-  # get user selection on calculation to perform
+  # introduce user to program options
   def start_program
     puts "Welcome to Changepoint Helper!"
     puts "Changepoint sucks, but this program will help it suck a little less :-D"
@@ -32,9 +33,9 @@ class ChangepointHelper
 
     @choice = $stdin.gets.chomp
     select_calculation_type (@choice)
-
   end
 
+  # set initial user input on calculation to perform
   def select_calculation_type (option)
     if option == "1"
       calc_percentage (@hours)
@@ -45,9 +46,9 @@ class ChangepointHelper
     end
 
     calculation_loop
-
   end
 
+  # get total hours worked this week from user input
 	def get_hours
 		puts "How many total hours did you work this week?"
 		print "> "
@@ -58,18 +59,20 @@ class ChangepointHelper
 		puts "How many hours did you spend on this project?"
 		print "> "
 		project_hours = $stdin.gets.chomp.to_f
-		# puts "The project hours are #{project_hours}"
-		# puts "The total hours worked are #{total_hours}"
 		percentage = (project_hours * 100) / total_hours
 		puts "Your percentage of time on this project was #{percentage}%"
     @all_percentages.push (percentage)
-    sum = @all_percentages.inject{|sum,x| sum + x }
-    if sum == 100
+    @all_hours.push (project_hours)
+    sum_p = get_percentage_progress(@all_percentages)
+    sum_h = get_hours_progress(@all_hours)
+    hours_left = remaining_hours (sum_h)
+    puts "You have #{hours_left} hours remaining."
+    if sum_p == 100
       puts "You're at 100%!"
-    elsif sum > 100
+    elsif sum_p > 100
       puts "You've exceeded 100%"
     else
-      puts "You're up to #{sum}%"
+      puts "You're up to #{sum_p}%"
     end
 	end
 
@@ -80,15 +83,38 @@ class ChangepointHelper
 		project_hours = (percentage * total_hours) / 100
 		puts "Hours spent on this project were #{project_hours}"
     @all_hours << project_hours
-    sum = @all_hours.inject{|sum,x| sum + x}
-    if sum == @hours
+    @all_percentages << percentage
+    sum_p = get_percentage_progress(@all_percentages)
+    sum_h = get_hours_progress(@all_hours)
+    hours_left = remaining_hours (sum_h)
+    if sum_h == @hours
       puts "You're at #{hours} hours."
-    elsif sum > @hours
+    elsif sum_h > @hours
       puts "You've exceeded your reported hours."
     else
-      puts "You're up to #{sum} hours."
+      puts "You're up to #{sum_h} hours."
     end
-	end
+  end
+
+  # can I use duck typing here?
+  def get_hours_progress (tot_hours)
+    tot_hours.inject {|sum,x| sum + x}
+  end
+
+  # can I used duck typing here?
+  def get_percentage_progress(tot_percentages)
+    tot_percentages.inject{|sum,x| sum + x }
+  end
+
+  # total hours worked - total hours added
+  def remaining_hours (tot_hours)
+    @hours - tot_hours
+  end
+
+  # subtract all percentages from 100%
+  def remaining_percentage (tot_percentage)
+    100 - tot_percentage
+  end
 
 	def calculation_loop
 		puts "Do another calculation? (y/n)"
@@ -97,11 +123,16 @@ class ChangepointHelper
 		if do_another == "y"
 			select_calculation_type (@choice)
 		elsif do_another == "n"
-			exit(0)
+      end_program
 		else
 			"You didn't enter a valid selection."
 			calculation_loop
 		end
+  end
+
+  def end_program
+    puts "All done--Goodbye!"
+    exit(0)
   end
 
 end
