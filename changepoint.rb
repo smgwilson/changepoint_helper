@@ -1,7 +1,9 @@
 class ChangepointHelper
 
-  def initialize(hours = 40)
+  def initialize(hours = 40, sum_of_percentages = 0, sum_of_hours = 0)
     @hours = hours
+    @sum_of_percentages = sum_of_percentages
+    @sum_of_hours = sum_of_hours
     @all_percentages = Array.new
     @all_hours = Array.new
   end
@@ -60,19 +62,16 @@ class ChangepointHelper
 		print "> "
 		project_hours = $stdin.gets.chomp.to_f
 		percentage = (project_hours * 100) / total_hours
-		puts "Your percentage of time on this project was #{percentage}%"
-    @all_percentages.push (percentage)
-    @all_hours.push (project_hours)
-    sum_p = get_percentage_progress(@all_percentages)
-    sum_h = get_hours_progress(@all_hours)
-    hours_left = remaining_hours (sum_h)
-    puts "You have #{hours_left} hours remaining."
-    if sum_p == 100
+    puts "Your percentage of time on this project was #{percentage}%"
+
+    sum_totals(percentage,project_hours)
+
+    if @sum_of_percentages == 100
       puts "You're at 100%!"
-    elsif sum_p > 100
+    elsif @sum_of_percentages > 100
       puts "You've exceeded 100%"
     else
-      puts "You're up to #{sum_p}%"
+      puts "You're up to #{@sum_of_percentages}%"
     end
 	end
 
@@ -82,17 +81,15 @@ class ChangepointHelper
 		percentage = $stdin.gets.chomp.to_f
 		project_hours = (percentage * total_hours) / 100
 		puts "Hours spent on this project were #{project_hours}"
-    @all_hours << project_hours
-    @all_percentages << percentage
-    sum_p = get_percentage_progress(@all_percentages)
-    sum_h = get_hours_progress(@all_hours)
-    hours_left = remaining_hours (sum_h)
-    if sum_h == @hours
-      puts "You're at #{hours} hours."
-    elsif sum_h > @hours
+
+    sum_totals(percentage,project_hours)
+
+    if @sum_of_hours == @hours
+      puts "You're at #{@sum_of_hours} hours."
+    elsif @sum_of_hours > @hours
       puts "You've exceeded your reported hours."
     else
-      puts "You're up to #{sum_h} hours."
+      puts "You're up to #{@sum_of_hours} hours."
     end
   end
 
@@ -114,6 +111,18 @@ class ChangepointHelper
   # subtract all percentages from 100%
   def remaining_percentage (tot_percentage)
     100 - tot_percentage
+  end
+
+  def sum_totals (latest_percentage, latest_hours)
+    @all_hours << latest_hours
+    @all_percentages << latest_percentage
+    @sum_of_percentages = get_percentage_progress(@all_percentages)
+    @sum_of_hours = get_hours_progress(@all_hours)
+    percentage_left = remaining_percentage(@sum_of_percentages)
+    hours_left = remaining_hours (@sum_of_hours)
+    puts " "
+    puts "You have #{percentage_left}% of your time remaining."
+    puts "You have #{hours_left} hours of your time remaining."
   end
 
 	def calculation_loop
