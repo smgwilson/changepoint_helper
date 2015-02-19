@@ -74,6 +74,7 @@ class ChangepointHelper
       run_program ("end")
     elsif @sum_of_percentages > 100
       puts "You've exceeded 100%"
+      restart
     else
       puts "You're up to #{@sum_of_percentages}%"
     end
@@ -96,6 +97,7 @@ class ChangepointHelper
       run_program ("end")
     elsif @sum_of_hours > @hours
       puts "You've exceeded your reported hours."
+      restart
     else
       puts "You're up to #{@sum_of_hours} hours."
     end
@@ -145,11 +147,30 @@ class ChangepointHelper
 		if do_another == "y"
 			select_calculation_type (@choice)
 		elsif do_another == "n"
-      end_program
+      run_program("end")
 		else
 			"You didn't enter a valid selection."
 			run_program("continue")
 		end
+  end
+
+  def restart
+    puts "Do you want to restart? (y/n)"
+    print "> "
+    do_another = $stdin.gets.chomp.downcase
+    if do_another == "y"
+      clear_values
+      run_program ("start")
+    elsif do_another == "n"
+      run_program("end")
+    else
+      "You didn't enter a valid selection."
+      restart
+    end
+  end
+
+  def clear_values
+    initialize
   end
 
   def end_program
