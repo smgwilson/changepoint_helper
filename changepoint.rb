@@ -37,7 +37,7 @@ class ChangepointHelper
     select_calculation_type (@choice)
   end
 
-  # set initial user input on calculation to perform
+  # get user input for calculation to perform
   def select_calculation_type (option)
     if option == "1"
       calc_percentage (@hours)
@@ -47,7 +47,7 @@ class ChangepointHelper
       puts "You didn't enter a valid selection."
     end
 
-    calculation_loop
+    run_program("continue")
   end
 
   # get total hours worked this week from user input
@@ -57,6 +57,7 @@ class ChangepointHelper
 		total_hours = $stdin.gets.chomp.to_f
 	end
 
+  # translate project hours into percentage of time spent
 	def calc_percentage (total_hours)
 		puts "How many hours did you spend on this project?"
 		print "> "
@@ -68,6 +69,9 @@ class ChangepointHelper
 
     if @sum_of_percentages == 100
       puts "You're at 100%!"
+      puts "Here are your project percentages:"
+      print_values(@all_percentages)
+      run_program ("end")
     elsif @sum_of_percentages > 100
       puts "You've exceeded 100%"
     else
@@ -75,6 +79,7 @@ class ChangepointHelper
     end
 	end
 
+  # translate percentage of time spent into project hours
 	def calc_project_hours (total_hours)
 		puts "What percentage of time did you spend on this project?"
 		print "> "
@@ -86,6 +91,9 @@ class ChangepointHelper
 
     if @sum_of_hours == @hours
       puts "You're at #{@sum_of_hours} hours."
+      puts "Here are your project hours:"
+      print_values(@all_hours)
+      run_program ("end")
     elsif @sum_of_hours > @hours
       puts "You've exceeded your reported hours."
     else
@@ -113,6 +121,7 @@ class ChangepointHelper
     100 - tot_percentage
   end
 
+  # total values and calculate remainder
   def sum_totals (latest_percentage, latest_hours)
     @all_hours << latest_hours
     @all_percentages << latest_percentage
@@ -125,6 +134,10 @@ class ChangepointHelper
     puts "You have #{hours_left} hours of your time remaining."
   end
 
+  def print_values (arr)
+    arr.each_with_index {|val, index| puts "#{index} => #{val}" }
+  end
+
 	def calculation_loop
 		puts "Do another calculation? (y/n)"
 		print "> "
@@ -135,7 +148,7 @@ class ChangepointHelper
       end_program
 		else
 			"You didn't enter a valid selection."
-			calculation_loop
+			run_program("continue")
 		end
   end
 
