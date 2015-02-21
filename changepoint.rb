@@ -103,14 +103,19 @@ class ChangepointHelper
     end
   end
 
-  # can I use duck typing here?
-  def get_hours_progress (tot_hours)
-    tot_hours.inject {|sum,x| sum + x}
-  end
+  # not DRY
+  # def get_hours_progress (tot_hours)
+  #   tot_hours.inject {|sum,x| sum + x}
+  # end
 
-  # can I used duck typing here?
-  def get_percentage_progress(tot_percentages)
-    tot_percentages.inject{|sum,x| sum + x }
+  # not DRY
+  # def get_percentage_progress(tot_percentages)
+  #   tot_percentages.inject{|sum,x| sum + x }
+  # end
+
+  # replaces "get_hours_progress" and "get_percentage_progress"
+  def get_progress(values)
+    values.inject{|sum,x| sum + x}
   end
 
   # total hours worked - total hours added
@@ -127,8 +132,8 @@ class ChangepointHelper
   def sum_totals (latest_percentage, latest_hours)
     @all_hours << latest_hours
     @all_percentages << latest_percentage
-    @sum_of_percentages = get_percentage_progress(@all_percentages)
-    @sum_of_hours = get_hours_progress(@all_hours)
+    @sum_of_percentages = get_progress(@all_percentages)
+    @sum_of_hours = get_progress(@all_hours)
     percentage_left = remaining_percentage(@sum_of_percentages)
     hours_left = remaining_hours (@sum_of_hours)
     puts " "
